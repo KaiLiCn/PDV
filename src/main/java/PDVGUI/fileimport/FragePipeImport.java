@@ -210,9 +210,10 @@ public class FragePipeImport {
         int countFirst = 0;
         for (Integer index : indexToName.keySet()){
             countFirst ++;
-            addQuery.append(", ").append(indexToName.get(index)).append(" OBJECT(50)");
+            String columnName = indexToName.get(index);
+            addQuery.append(", ").append(columnName).append(" OBJECT(50)");
             addValuesQuery.append(",?");
-            nameToDBIndex.put(indexToName.get(index), 7+countFirst);
+            nameToDBIndex.put(columnName, 7+countFirst);
         }
         addValuesQuery.append(")");
 
@@ -559,7 +560,12 @@ public class FragePipeImport {
                 indexToName.put(i, header.trim().replace(" ", ""));
                 assignenModIndex = i;
             } else {
-                indexToName.put(i, header.trim().replace(" ", ""));
+                String columnName = header.trim().replace(" ", "");
+                if (columnName.matches(".*\\d+.*")){
+
+                    columnName = "'" + columnName + "'";
+                }
+                indexToName.put(i, columnName);
             }
         }
 
